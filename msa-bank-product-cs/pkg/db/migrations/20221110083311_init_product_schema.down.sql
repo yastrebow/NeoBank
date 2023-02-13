@@ -1,0 +1,1 @@
+drop schema IF EXISTS msa_bank_product_cs_schema;

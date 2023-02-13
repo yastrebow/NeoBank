@@ -1,0 +1,1 @@
+DROP table msa_bank_credit_cs_schema.credit

@@ -1,0 +1,2 @@
+ALTER TABLE msa_bank_product_cs_schema.product
+DROP COLUMN client_id;

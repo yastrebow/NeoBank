@@ -1,0 +1,1 @@
+DROP SCHEMA msa_bank_client_cs_schema CASCADE;

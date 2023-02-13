@@ -1,0 +1,1 @@
+create schema if not exists msa_bank_product_cs_schema;

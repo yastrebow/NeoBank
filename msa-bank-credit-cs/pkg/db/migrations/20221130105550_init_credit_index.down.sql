@@ -1,0 +1,1 @@
+DROP INDEX table_name_id_idx;

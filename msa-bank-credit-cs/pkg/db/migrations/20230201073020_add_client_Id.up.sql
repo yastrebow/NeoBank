@@ -1,0 +1,1 @@
+ALTER TABLE  msa_bank_credit_cs_schema.credit ADD COLUMN client_id uuid;

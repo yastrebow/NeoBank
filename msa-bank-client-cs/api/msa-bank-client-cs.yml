@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  description: "This is a sample server for Clients."
+  version: "1.0.0"
+  title: "Swagger msa-bank-client-cs"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "msa-bank-client-cs.swagger.io"
+basePath: "/v1"
+tags:
+- name: "client-api"
+  description: "Client Api"
+schemes:
+- "http"
+paths:
+  /client:
+    post:
+      tags:
+      - "client-api"
+      summary: "Add a new client to the store"
+      description: ""
+      operationId: "addClient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Client object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Client"
+      responses:
+        "201":
+          description: "successful operation"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'    
+    put:
+      tags:
+      - "client-api"
+      summary: "Update an existing client"
+      description: ""
+      operationId: "updateClient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Client object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Client"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Client"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Client not found"
+        "405":
+          description: "Validation exception"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'          
+    get:
+      tags:
+      - "client-api"
+      summary: "Get all clients from the store"
+      description: ""
+      operationId: "getClients"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Client"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'          
+  /client/{id}:
+    get:
+      tags:
+      - "client-api"
+      summary: "Delete client from the store"
+      description: ""
+      operationId: "getClient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "id"
+        description: "Client object that needs to be added to the store"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Client"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'  
+    delete:
+      tags:
+      - "client-api"
+      summary: "Delete client from the store"
+      description: "Delete client"
+      operationId: "deleteClient"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "id"
+        description: "Client object that needs to be added to the store"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'          
+definitions:
+  Client:
+    type: "object"
+    required:
+      - firstName
+      - lastName
+      - birthDate
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      birthDate:
+        type: "string"
+        format: "date"
+  Error:
+    title: Error
+    type: "object"
+    properties:
+      errorMessage:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

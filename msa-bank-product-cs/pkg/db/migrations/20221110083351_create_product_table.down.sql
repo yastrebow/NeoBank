@@ -1,0 +1,1 @@
+drop table IF EXISTS msa_bank_product_cs_schema.product

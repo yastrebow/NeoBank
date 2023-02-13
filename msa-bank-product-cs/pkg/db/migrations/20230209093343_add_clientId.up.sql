@@ -1,0 +1,1 @@
+ALTER TABLE  msa_bank_product_cs_schema.product ADD COLUMN client_id uuid;

@@ -1,0 +1,1 @@
+drop index table_name_id_uindex

@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  description: This is a sample server for credit.
+  version: 1.0.0
+  title: "Swagger msa-bank-credit-cs"
+servers:
+  - url: /v1
+tags:
+  - name: "credit-api"
+    description: "Credit Api"
+paths:
+  "/credit/paymentPlan":
+    post:
+      summary: Get credit paymentPlan from the store
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Rate"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllPayment'
+
+  "/credit":
+    post:
+      summary: "Create new credit"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Credit"
+      responses: 
+        "201":
+          description: successful operation
+        "405":
+          description: Invalid input
+
+  "/credit/earlyRepayment":
+    post:
+      summary: "Create new earlyRepayment"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/EarlyRepayment"
+      responses: 
+        "201":
+          description: successful operation
+        "405":
+          description: Invalid input
+
+  "/credit/fullRepayment":
+    post:
+      summary: "Creating a request for full repayment"
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/FullRepayment"
+      responses: 
+        "201":
+          description: successful operation
+        "405":
+          description: Invalid input
+
+components:
+  schemas:
+    Rate:
+      type: object
+      properties:
+        amount:
+          type: "number"
+        rate:
+          type: "number"
+        months:
+          type: "integer"
+    Credit:
+      type: object
+      required:
+        - clientId
+        - id
+        - amount
+        - rate
+        - months
+      properties:
+        clientId:
+          type: "string"
+          format: "uuid"
+        id:
+          type: "string"
+          format: "uuid"
+        amount:
+          type: "number"
+        rate:
+          type: "number"
+        months:
+          type: "integer"
+    EarlyRepayment:
+      type: object
+      required:
+        - clientId
+        - amount
+      properties:
+        clientId:
+          type: "string"
+          format: "uuid"
+        amount:
+          type: "number"
+    FullRepayment:
+      type: object
+      required:
+        - clientId
+      properties:
+        clientId:
+          type: "string"
+          format: "uuid"
+    PaymentPlan:
+      type: object
+      required:
+        - month
+        - monthPayment
+        - amount
+      properties:
+        month:
+          type: "integer"
+        monthPayment:
+          type: "number"
+        amount:
+          type: "number"
+    AllPayment:
+      type: array
+      items:
+        $ref: '#/components/schemas/PaymentPlan'          
