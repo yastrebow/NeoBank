@@ -25,18 +25,18 @@ func main() {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:     []string{"localhost:29092"},
 		GroupID:     "consumer-group-id",
-		GroupTopics: []string{"dev.msa_bank_product_cs_schema.product", "dev.msa_bank_credit_cs_schema.credit", "dev.msa_bank_client_cs_schema.client"},
+		GroupTopics: []string{"dev.msa_bank_account_cs_schema.account", "dev.msa_bank_credit_cs_schema.credit", "dev.msa_bank_client_cs_schema.client"},
 		MinBytes:    10e2, // 1KB
 		MaxBytes:    10e6, // 10MB
 	})
-
+	log.Info("Start msa-bank-report-ss server")
 	for {
 		msg, err := r.ReadMessage(context.Background())
 		if err != nil {
 			fmt.Println(err)
 			break
 		}
-		// fmt.Printf("kafka message at topic/partition/offset %v/%v/%v: %s = %s\n", msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
+		fmt.Printf("kafka message at topic/partition/offset %v/%v/%v: %s = %s\n", msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
 
 		var m models.Message
 		err = json.Unmarshal(msg.Value, &m)
@@ -69,12 +69,11 @@ func main() {
 				panic("could not write to redis " + err.Error())
 			}
 
-			val, err := rdb.HGetAll(ctx, IDS.ClientId).Result()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Printf("credit redis key: %s val = %s\n", IDS.ClientId, val)
-			
+			// val, err := rdb.HGetAll(ctx, IDS.ClientId).Result()
+			// if err != nil {
+			// 	panic(err)
+			// }
+			// fmt.Printf("credit redis key: %s val = %s\n", IDS.ClientId, val)
 
 		case "client":
 
@@ -88,14 +87,14 @@ func main() {
 				panic("could not write to redis " + err.Error())
 			}
 
-			val, err := rdb.Get(ctx, IDS.Id).Result()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println("client redis key -", IDS.Id)
-			fmt.Println("client redis val -", val)
+			// val, err := rdb.Get(ctx, IDS.Id).Result()
+			// if err != nil {
+			// 	panic(err)
+			// }
+			// fmt.Println("client redis key -", IDS.Id)
+			// fmt.Println("client redis val -", val)
 
-		case "product":
+		case "account":
 			cmd := redis.NewStringCmd(ctx, "select", 2)
 			err = rdb.Process(ctx, cmd)
 			if err != nil {
@@ -113,7 +112,6 @@ func main() {
 			fmt.Printf("product redis key: %s val = %s\n", IDS.ClientId, val)
 
 		}
-
 
 	}
 

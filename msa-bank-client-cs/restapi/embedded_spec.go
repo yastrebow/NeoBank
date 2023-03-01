@@ -144,7 +144,10 @@ func init() {
         ],
         "responses": {
           "201": {
-            "description": "successful operation"
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Client"
+            }
           },
           "405": {
             "description": "Invalid input"
@@ -410,7 +413,10 @@ func init() {
         ],
         "responses": {
           "201": {
-            "description": "successful operation"
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Client"
+            }
           },
           "405": {
             "description": "Invalid input"

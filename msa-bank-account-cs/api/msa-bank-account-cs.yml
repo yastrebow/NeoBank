@@ -1,0 +1,199 @@
+openapi: 3.0.1
+info:
+  title: Swagger msa-bank-account-cs
+  description: This is a sample server for Accounts.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://msa-bank-account-cs.io/v1
+tags:
+  - name: account-api
+    description: Account Api
+paths:
+  /accounts:
+    get:
+      tags:
+        - account-api
+      summary: Get all accounts from the store
+      operationId: getAccounts
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+        '405':
+          description: Invalid input
+          content: {}
+  /account:        
+    put:
+      tags:
+        - account-api
+      summary: Update an existing account
+      operationId: updateAccount
+      requestBody:
+        description: Account object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Account not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - account-api
+      summary: Add a new account to the store
+      operationId: addAccount
+      requestBody:
+        description: Pet object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  /account/{id}/update-balance:
+    post:
+      tags:
+        - account-api
+      summary: update balance for account from the store
+      operationId: updateAccountBalance
+      parameters:
+        - name: id
+          in: path
+          description: Account Id object that needs to be added to the store
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Request object for change balance
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeAccountBalance'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '404':
+          description: Not found account
+          content: {}
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  /account/{id}:
+    get:
+      tags:
+        - account-api
+      summary: Get account from the store
+      operationId: getAccount
+      parameters:
+        - name: id
+          in: path
+          description: Account object that needs to be added to the store
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '405':
+          description: Invalid input
+          content: {}
+    delete:
+      tags:
+        - account-api
+      summary: Delete account from the store
+      description: Delete account
+      operationId: deleteAccount
+      parameters:
+        - name: id
+          in: path
+          description: Account object that needs to be added to the store
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '405':
+          description: Invalid input
+          content: {}
+components:
+  schemas:
+    ChangeAccountBalance:
+      required:
+        - requestedAmount
+      type: object
+      properties:
+        requestedAmount:
+          type: number
+    Account:
+      required:
+        - accountNumber
+        - amount
+        - clientId
+        - startDate
+        - endDate
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountNumber:
+          type: string
+        amount:
+          type: number
+        clientId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          # format: date
+        endDate:
+          type: string
+          # format: date

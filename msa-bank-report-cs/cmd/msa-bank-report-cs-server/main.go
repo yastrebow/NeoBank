@@ -18,8 +18,9 @@ var rdb *redis.Client
 var ctx = context.Background()
 
 const portNumber = 8084
+
 func main() {
-	
+
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -29,6 +30,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/report/{clientId}", handler)
+	fmt.Printf("Starting msa-bank-report-cs server on port %v\n", portNumber)
 	server := http.Server{
 		Addr:    fmt.Sprintf("localhost:%d", portNumber),
 		Handler: r,
@@ -37,7 +39,7 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
+	vars := mux.Vars(r)
 	clientId := vars["clientId"]
 	log.Info("ClientId: ", clientId)
 	response := &models.Report{}
@@ -48,21 +50,21 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	credits := []models.Credit{}
-	val, err := rdb.HGetAll(ctx, clientId).Result()
+	credit, err := rdb.HGetAll(ctx, clientId).Result()
 	if err != nil {
 		panic(err)
 	}
-	for _, item := range val {
+	for _, item := range credit {
 		creditModel := &models.Credit{}
 		err := json.Unmarshal([]byte(item), creditModel)
 		if err != nil {
 			panic(err)
 		}
-		
+
 		log.Info("credits - ", creditModel)
 		credits = append(credits, *creditModel)
 	}
-	response.Credit = credits
+	response.Credits = credits
 
 	cmd = redis.NewStringCmd(ctx, "select", 1)
 	err = rdb.Process(ctx, cmd)
@@ -84,10 +86,34 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	clientModel := &models.Client{}
 	err = json.Unmarshal([]byte(client), clientModel)
 	if err != nil {
-    	return
+		return
 	}
-	
+
 	response.Client = *clientModel
+
+	cmd = redis.NewStringCmd(ctx, "select", 2)
+	err = rdb.Process(ctx, cmd)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	accounts := []models.Account{}
+	account, err := rdb.HGetAll(ctx, clientId).Result()
+	if err != nil {
+		panic(err)
+	}
+	for _, item := range account {
+		accountModel := &models.Account{}
+		err := json.Unmarshal([]byte(item), accountModel)
+		if err != nil {
+			panic(err)
+		}
+
+		log.Info("accounts - ", accountModel)
+		accounts = append(accounts, *accountModel)
+	}
+	response.Accounts = accounts
+
 	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

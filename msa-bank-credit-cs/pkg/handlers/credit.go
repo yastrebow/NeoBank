@@ -119,7 +119,7 @@ func (h Handler) PostCreditFullRepayment(ctx echo.Context) error {
 
 	reqRepayment := &models.EarlyRepayment{
 		Amount:   0.0,
-		ClientId: req.ClientId,
+		Id: req.Id,
 	}
 
 	res, err := h.RepaymentService.PostEarlyRepayment(reqRepayment)

@@ -57,7 +57,7 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 			addError.ErrorMessage = result.Error.Error()
 			return client_api.NewAddClientInternalServerError().WithPayload(&addError)
 		}
-		return client_api.NewAddClientCreated()
+		return client_api.NewAddClientCreated().WithPayload(&client)
 	})
 
 	// Delete client ...

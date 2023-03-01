@@ -22,6 +22,11 @@ AddClientCreated successful operation
 swagger:response addClientCreated
 */
 type AddClientCreated struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.Client `json:"body,omitempty"`
 }
 
 // NewAddClientCreated creates AddClientCreated with default headers values
@@ -30,12 +35,27 @@ func NewAddClientCreated() *AddClientCreated {
 	return &AddClientCreated{}
 }
 
+// WithPayload adds the payload to the add client created response
+func (o *AddClientCreated) WithPayload(payload *models.Client) *AddClientCreated {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add client created response
+func (o *AddClientCreated) SetPayload(payload *models.Client) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *AddClientCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(201)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // AddClientMethodNotAllowedCode is the HTTP code returned for type AddClientMethodNotAllowed

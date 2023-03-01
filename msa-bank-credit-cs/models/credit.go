@@ -21,13 +21,13 @@ type Credit struct {
 
 // EarlyRepayment defines model for EarlyRepayment.
 type EarlyRepayment struct {
-	Amount   float32            `json:"amount"`
-	ClientId openapi_types.UUID `json:"clientId"`
+	Amount float32            `json:"amount"`
+	Id     openapi_types.UUID `json:"id"`
 }
 
 // FullRepayment defines model for FullRepayment.
 type FullRepayment struct {
-	ClientId openapi_types.UUID `json:"clientId"`
+	Id openapi_types.UUID `json:"id"`
 }
 
 // PaymentPlan defines model for PaymentPlan.

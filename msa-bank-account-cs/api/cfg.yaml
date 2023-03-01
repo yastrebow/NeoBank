@@ -1,0 +1,5 @@
+package: restapi
+generate:
+  gorilla-server: true
+  embedded-spec: true
+output: restapi/msa-bank-account-cs.gen.go

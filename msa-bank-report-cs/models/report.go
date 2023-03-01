@@ -2,7 +2,8 @@ package models
 
 type Report struct {
 	Client Client
-	Credit []Credit
+	Credits []Credit
+	Accounts []Account
 }
 
 type Client struct {
@@ -20,3 +21,10 @@ type Credit struct {
 	TotalAmount   string   `json:"total_amount"`
 }
 
+type Account struct {
+	AccountNumber string              `json:"account_number"`
+	Amount        float32             `json:"amount"`
+	EndDate       string              `json:"end_date"`
+	Id            string              `json:"id"`
+	StartDate     string              `json:"start_date"`
+}
