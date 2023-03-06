@@ -9,7 +9,7 @@ import (
 
 // Account defines model for Account.
 type Account struct {
-	AccountNumber string              `json:"accountNumber"`
+	AccountNumber *string             `json:"accountNumber,omitempty"`
 	Amount        float32             `json:"amount"`
 	ClientId      openapi_types.UUID  `json:"clientId"`
 	EndDate       string              `json:"endDate"`
@@ -22,11 +22,21 @@ type ChangeAccountBalance struct {
 	RequestedAmount float32 `json:"requestedAmount"`
 }
 
+// UpdateAccount defines model for UpdateAccount.
+type UpdateAccount struct {
+	AccountNumber *string            `json:"accountNumber,omitempty"`
+	Amount        *float32           `json:"amount,omitempty"`
+	ClientId      openapi_types.UUID `json:"clientId"`
+	EndDate       *string            `json:"endDate,omitempty"`
+	Id            openapi_types.UUID `json:"id"`
+	StartDate     *string            `json:"startDate,omitempty"`
+}
+
 // AddAccountJSONRequestBody defines body for AddAccount for application/json ContentType.
 type AddAccountJSONRequestBody = Account
 
 // UpdateAccountJSONRequestBody defines body for UpdateAccount for application/json ContentType.
-type UpdateAccountJSONRequestBody = Account
+type UpdateAccountJSONRequestBody = UpdateAccount
 
 // UpdateAccountBalanceJSONRequestBody defines body for UpdateAccountBalance for application/json ContentType.
 type UpdateAccountBalanceJSONRequestBody = ChangeAccountBalance

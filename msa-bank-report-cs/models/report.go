@@ -22,7 +22,6 @@ type Credit struct {
 }
 
 type Account struct {
-	AccountNumber string              `json:"account_number"`
 	Amount        float32             `json:"amount"`
 	EndDate       string              `json:"end_date"`
 	Id            string              `json:"id"`

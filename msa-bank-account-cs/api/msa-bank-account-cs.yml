@@ -47,7 +47,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Account'
+              $ref: '#/components/schemas/UpdateAccount'
         required: true
       responses:
         '200':
@@ -174,7 +174,6 @@ components:
           type: number
     Account:
       required:
-        - accountNumber
         - amount
         - clientId
         - startDate
@@ -193,7 +192,25 @@ components:
           format: uuid
         startDate:
           type: string
-          # format: date
         endDate:
           type: string
-          # format: date
+    UpdateAccount:
+      required:
+        - clientId
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountNumber:
+          type: string
+        amount:
+          type: number
+        clientId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+        endDate:
+          type: string

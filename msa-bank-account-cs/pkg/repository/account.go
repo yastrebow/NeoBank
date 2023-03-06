@@ -57,11 +57,19 @@ func (b *Account) UpdateAccount(e *models.Account) (*models.Account, error) {
 	if result := b.db.First(&account, "id = ?", e.Id); result.Error != nil {
 		log.Fatal(result.Error)
 	}
-	account.AccountNumber = e.AccountNumber
-	account.Amount = e.Amount
+	if e.AccountNumber != nil {
+		account.AccountNumber = e.AccountNumber
+	}
+	if e.Amount != 0 {
+		account.Amount = e.Amount
+	}
 	account.ClientId = e.ClientId
-	account.StartDate = e.StartDate
-	account.EndDate = e.EndDate
+	if e.StartDate != "" {
+		account.StartDate = e.StartDate
+	}
+	if e.EndDate != "" {
+		account.EndDate = e.EndDate
+	}
 	b.db.Save(&account)
 
 	return &account, nil
