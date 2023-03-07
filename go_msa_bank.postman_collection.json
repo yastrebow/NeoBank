@@ -1,0 +1,629 @@
+{
+	"info": {
+		"_postman_id": "f0eec96a-b80c-439d-91c0-06018c726df1",
+		"name": "GO TEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13431730"
+	},
+	"item": [
+		{
+			"name": "Connectors",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"product_pg_connector\",\r\n    \"config\": {\r\n        \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\r\n        \"tasks.max\": \"10\",\r\n        \"plugin.name\": \"pgoutput\",\r\n        \"database.hostname\": \"postgres\",\r\n        \"database.port\": \"5432\",\r\n        \"database.user\": \"postgres\",\r\n        \"database.password\": \"postgres\",\r\n        \"database.dbname\": \"restapi_dev\",\r\n        \"database.server.name\": \"postgres\",\r\n        \"table.include.list\": \"msa_bank_product_cs_schema.(.*)\",\r\n        \"heartbeat.interval.ms\": \"5000\",\r\n        \"slot.name\": \"msa_bank_product_cs_debezium\",\r\n        \"publication.name\": \"postgres_publication\",\r\n        \"topic.prefix\": \"dev\",\r\n        \"transforms\": \"AddPrefix\",\r\n        \"transforms.AddPrefix.type\": \"org.apache.kafka.connect.transforms.RegexRouter\",\r\n        \"transforms.AddPrefix.regex\": \"msa_bank_product_cs.msa_bank_product_cs_schema.(.*)\",\r\n        \"transforms.AddPrefix.replacement\": \"data.cdc.msa-bank-product\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Connectors - config",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\r\n    \"tasks.max\": \"10\",\r\n    \"plugin.name\": \"pgoutput\",\r\n    \"output.data.format\": \"JSON\",\r\n    \"database.hostname\": \"postgres\",\r\n    \"include.schema.changes\": \"false\",\r\n    \"database.port\": \"5432\",\r\n    \"database.user\": \"postgres\",\r\n    \"database.password\": \"postgres\",\r\n    \"database.dbname\" : \"restapi_dev\",\r\n    \"database.server.name\": \"postgres\",\r\n    \"table.include.list\": \"msa_bank_product_cs_schema.(.*),msa_bank_credit_cs_schema.(.*),msa_bank_client_cs_schema.(.*)\",\r\n    \"heartbeat.interval.ms\": \"5000\",\r\n    \"slot.name\": \"msa_bank_product_cs_debezium\",\r\n    \"publication.name\": \"postgres_publication\",\r\n    \"topic.prefix\": \"dev\",\r\n     \"decimal.handling.mode\": \"string\"\r\n  }\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors/product_pg_connector/config",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors",
+						"product_pg_connector",
+						"config"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clientId\": \"{{clientId}}\",\r\n  \"description\": \"string\",\r\n  \"id\": \"{{$guid}}\",\r\n  \"name\": \"credit\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8082/v1/product",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8082",
+					"path": [
+						"v1",
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \"string\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66af67\",\r\n  \"name\": \"credit33\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:27466/v1/product",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "27466",
+					"path": [
+						"v1",
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Product - del",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:27466/v1/product/3fa85f64-5717-4562-b3fc-2c963f66af67",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "27466",
+					"path": [
+						"v1",
+						"product",
+						"3fa85f64-5717-4562-b3fc-2c963f66af67"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts - delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/account/{{accountId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"{{accountId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit - paymentPlan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"amount\": 120000,\r\n  \"rate\": 11,\r\n  \"months\": 12\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/credit/paymentPlan",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"credit",
+						"paymentPlan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Client - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var clientId = jsonData.id;\r",
+							"pm.collectionVariables.set(\"clientId\",  clientId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"birthDate\": \"1983-02-09\",\r\n  \"firstName\": \"Иван\",\r\n  \"id\": \"{{$guid}}\",\r\n  \"lastName\": \"Иванов\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8086/v1/client",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8086",
+					"path": [
+						"v1",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Client",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var creditId = jsonData.id;\r",
+							"pm.collectionVariables.set(\"creditId\",  creditId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clientId\": \"{{clientId}}\",\r\n  \"amount\": {{$random}},\r\n  \"rate\": {{$randomInt}},\r\n  \"months\": {{$randomInt}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/credit",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"credit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Credit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit - earlyRepayment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{creditId}}\",\r\n  \"amount\": 50\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/credit/earlyRepayment",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"credit",
+						"earlyRepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Credit  Early Repayment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit - fullRepayment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{creditId}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/credit/fullRepayment",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"credit",
+						"fullRepayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts - create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var accountId = jsonData.id;\r",
+							"pm.collectionVariables.set(\"accountId\",  accountId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accountNumber\": \"{{$randomInt}}\",\r\n  \"amount\": {{$randomInt}},\r\n  \"clientId\": \"{{clientId}}\",\r\n  \"startDate\": \"2006-01-02\",\r\n  \"endDate\": \"2023-02-28\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Account Create",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts - update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{accountId}}\",\r\n  \"clientId\": \"{{clientId}}\",\r\n  \"endDate\": \"2025-02-28\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Account Update",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts - update balance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"requestedAmount\": 400000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/account/{{accountId}}/update-balance",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"{{accountId}}",
+						"update-balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accounts - get all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/accounts",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8084/report/{{clientId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report Download",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/download-report/{{clientId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"download-report",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "clientId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "creditId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accountId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
