@@ -23,35 +23,36 @@
     * получение информации по продукту
 
 Используемые технологии:
+  
 **Общие для всех микросервисов**
-Go 1.18
-https://github.com/golang-migrate/migrate
-https://gorm.io/
-
-**msa-bank-account-cs**
-https://github.com/gorilla/mux
-https://github.com/deepmap/oapi-codegen
-
-**msa-bank-client-cs**
-https://pkg.go.dev/net/http
-https://github.com/go-swagger/go-swagger
-
-**msa-bank-credit-cs**
-https://github.com/labstack/echo
-https://github.com/deepmap/oapi-codegen
-
-**msa-bank-product-cs**
-https://pkg.go.dev/net/http
-https://github.com/sirupsen/logrus
-https://github.com/go-swagger/go-swagger
-
-**msa-bank-report-cs**
-https://github.com/gorilla/mux
-https://github.com/redis/go-redis
-https://github.com/sirupsen/logrus
-https://github.com/qax-os/excelize
-https://github.com/deepmap/oapi-codegen
-
-**msa-bank-report-ss**
-https://github.com/redis/go-redis
-https://github.com/segmentio/kafka-go
+Go 1.18  
+https://github.com/golang-migrate/migrate  
+https://gorm.io/  
+  
+**msa-bank-account-cs**  
+https://github.com/gorilla/mux  
+https://github.com/deepmap/oapi-codegen  
+  
+**msa-bank-client-cs**  
+https://pkg.go.dev/net/http  
+https://github.com/go-swagger/go-swagger  
+  
+**msa-bank-credit-cs**  
+https://github.com/labstack/echo  
+https://github.com/deepmap/oapi-codegen  
+  
+**msa-bank-product-cs**  
+https://pkg.go.dev/net/http  
+https://github.com/sirupsen/logrus  
+https://github.com/go-swagger/go-swagger  
+  
+**msa-bank-report-cs**  
+https://github.com/gorilla/mux  
+https://github.com/redis/go-redis  
+https://github.com/sirupsen/logrus  
+https://github.com/qax-os/excelize  
+https://github.com/deepmap/oapi-codegen  
+  
+**msa-bank-report-ss**  
+https://github.com/redis/go-redis  
+https://github.com/segmentio/kafka-go  
