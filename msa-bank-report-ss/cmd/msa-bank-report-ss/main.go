@@ -36,7 +36,7 @@ func main() {
 			fmt.Println(err)
 			break
 		}
-		fmt.Printf("kafka message at topic/partition/offset %v/%v/%v: %s = %s\n", msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
+		// fmt.Printf("kafka message at topic/partition/offset %v/%v/%v: %s = %s\n", msg.Topic, msg.Partition, msg.Offset, string(msg.Key), string(msg.Value))
 
 		var m models.Message
 		err = json.Unmarshal(msg.Value, &m)
@@ -105,11 +105,11 @@ func main() {
 				panic("could not write to redis " + err.Error())
 			}
 
-			val, err := rdb.HGetAll(ctx, IDS.ClientId).Result()
-			if err != nil {
-				panic(err)
-			}
-			fmt.Printf("product redis key: %s val = %s\n", IDS.ClientId, val)
+			// val, err := rdb.HGetAll(ctx, IDS.ClientId).Result()
+			// if err != nil {
+			// 	panic(err)
+			// }
+			// fmt.Printf("product redis key: %s val = %s\n", IDS.ClientId, val)
 
 		}
 

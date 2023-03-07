@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"encoding/json"
-	// "log"
 	"msa-bank-account-cs/models"
 	"msa-bank-account-cs/pkg/services"
 	"net/http"
