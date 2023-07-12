@@ -86,7 +86,7 @@ func init() {
         "operationId": "updateClient",
         "parameters": [
           {
-            "description": "Client object that needs to be added to the store",
+            "description": "Client object that needs to be update",
             "name": "body",
             "in": "body",
             "required": true,
@@ -161,8 +161,9 @@ func init() {
         }
       }
     },
-    "/client/{id}": {
+    "/client/find-by-passport/{passportNumber}": {
       "get": {
+        "description": "Get client by passport",
         "consumes": [
           "application/json"
         ],
@@ -172,12 +173,57 @@ func init() {
         "tags": [
           "client-api"
         ],
-        "summary": "Delete client from the store",
+        "summary": "Get client from the store by passport number",
+        "operationId": "getClientByPassport",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Client passport number",
+            "name": "passportNumber",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Client"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/client/{id}": {
+      "get": {
+        "description": "Get client",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "client-api"
+        ],
+        "summary": "Get client from the store by id",
         "operationId": "getClient",
         "parameters": [
           {
             "type": "string",
-            "description": "Client object that needs to be added to the store",
+            "description": "Client id",
             "name": "id",
             "in": "path",
             "required": true
@@ -212,12 +258,12 @@ func init() {
         "tags": [
           "client-api"
         ],
-        "summary": "Delete client from the store",
+        "summary": "Delete client from the store by id",
         "operationId": "deleteClient",
         "parameters": [
           {
             "type": "string",
-            "description": "Client object that needs to be added to the store",
+            "description": "Client id",
             "name": "id",
             "in": "path",
             "required": true
@@ -246,7 +292,9 @@ func init() {
       "required": [
         "firstName",
         "lastName",
-        "birthDate"
+        "birthDate",
+        "passportNumber",
+        "passportIssueDate"
       ],
       "properties": {
         "birthDate": {
@@ -261,6 +309,13 @@ func init() {
           "format": "uuid"
         },
         "lastName": {
+          "type": "string"
+        },
+        "passportIssueDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "passportNumber": {
           "type": "string"
         }
       }
@@ -355,7 +410,7 @@ func init() {
         "operationId": "updateClient",
         "parameters": [
           {
-            "description": "Client object that needs to be added to the store",
+            "description": "Client object that needs to be update",
             "name": "body",
             "in": "body",
             "required": true,
@@ -430,8 +485,9 @@ func init() {
         }
       }
     },
-    "/client/{id}": {
+    "/client/find-by-passport/{passportNumber}": {
       "get": {
+        "description": "Get client by passport",
         "consumes": [
           "application/json"
         ],
@@ -441,12 +497,57 @@ func init() {
         "tags": [
           "client-api"
         ],
-        "summary": "Delete client from the store",
+        "summary": "Get client from the store by passport number",
+        "operationId": "getClientByPassport",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Client passport number",
+            "name": "passportNumber",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Client"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/client/{id}": {
+      "get": {
+        "description": "Get client",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "client-api"
+        ],
+        "summary": "Get client from the store by id",
         "operationId": "getClient",
         "parameters": [
           {
             "type": "string",
-            "description": "Client object that needs to be added to the store",
+            "description": "Client id",
             "name": "id",
             "in": "path",
             "required": true
@@ -481,12 +582,12 @@ func init() {
         "tags": [
           "client-api"
         ],
-        "summary": "Delete client from the store",
+        "summary": "Delete client from the store by id",
         "operationId": "deleteClient",
         "parameters": [
           {
             "type": "string",
-            "description": "Client object that needs to be added to the store",
+            "description": "Client id",
             "name": "id",
             "in": "path",
             "required": true
@@ -515,7 +616,9 @@ func init() {
       "required": [
         "firstName",
         "lastName",
-        "birthDate"
+        "birthDate",
+        "passportNumber",
+        "passportIssueDate"
       ],
       "properties": {
         "birthDate": {
@@ -530,6 +633,13 @@ func init() {
           "format": "uuid"
         },
         "lastName": {
+          "type": "string"
+        },
+        "passportIssueDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "passportNumber": {
           "type": "string"
         }
       }

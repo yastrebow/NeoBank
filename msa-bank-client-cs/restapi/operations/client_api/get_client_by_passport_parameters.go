@@ -13,41 +13,41 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetClientParams creates a new GetClientParams object
+// NewGetClientByPassportParams creates a new GetClientByPassportParams object
 //
 // There are no default values defined in the spec.
-func NewGetClientParams() GetClientParams {
+func NewGetClientByPassportParams() GetClientByPassportParams {
 
-	return GetClientParams{}
+	return GetClientByPassportParams{}
 }
 
-// GetClientParams contains all the bound params for the get client operation
+// GetClientByPassportParams contains all the bound params for the get client by passport operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters getClient
-type GetClientParams struct {
+// swagger:parameters getClientByPassport
+type GetClientByPassportParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Client id
+	/*Client passport number
 	  Required: true
 	  In: path
 	*/
-	ID string
+	PassportNumber string
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewGetClientParams() beforehand.
-func (o *GetClientParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewGetClientByPassportParams() beforehand.
+func (o *GetClientByPassportParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
 
-	rID, rhkID, _ := route.Params.GetOK("id")
-	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
+	rPassportNumber, rhkPassportNumber, _ := route.Params.GetOK("passportNumber")
+	if err := o.bindPassportNumber(rPassportNumber, rhkPassportNumber, route.Formats); err != nil {
 		res = append(res, err)
 	}
 	if len(res) > 0 {
@@ -56,8 +56,8 @@ func (o *GetClientParams) BindRequest(r *http.Request, route *middleware.Matched
 	return nil
 }
 
-// bindID binds and validates parameter ID from path.
-func (o *GetClientParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+// bindPassportNumber binds and validates parameter PassportNumber from path.
+func (o *GetClientByPassportParams) bindPassportNumber(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -65,7 +65,7 @@ func (o *GetClientParams) bindID(rawData []string, hasKey bool, formats strfmt.R
 
 	// Required: true
 	// Parameter is provided by construction from the route
-	o.ID = raw
+	o.PassportNumber = raw
 
 	return nil
 }

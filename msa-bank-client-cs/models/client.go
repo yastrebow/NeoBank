@@ -35,6 +35,15 @@ type Client struct {
 	// last name
 	// Required: true
 	LastName *string `json:"lastName"`
+
+	// passport issue date
+	// Required: true
+	// Format: date
+	PassportIssueDate *strfmt.Date `json:"passportIssueDate"`
+
+	// passport number
+	// Required: true
+	PassportNumber *string `json:"passportNumber"`
 }
 
 // Validate validates this client
@@ -54,6 +63,14 @@ func (m *Client) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLastName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePassportIssueDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePassportNumber(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -100,6 +117,28 @@ func (m *Client) validateID(formats strfmt.Registry) error {
 func (m *Client) validateLastName(formats strfmt.Registry) error {
 
 	if err := validate.Required("lastName", "body", m.LastName); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Client) validatePassportIssueDate(formats strfmt.Registry) error {
+
+	if err := validate.Required("passportIssueDate", "body", m.PassportIssueDate); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("passportIssueDate", "body", "date", m.PassportIssueDate.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Client) validatePassportNumber(formats strfmt.Registry) error {
+
+	if err := validate.Required("passportNumber", "body", m.PassportNumber); err != nil {
 		return err
 	}
 

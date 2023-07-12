@@ -30,7 +30,7 @@ type DeleteClientParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Client object that needs to be added to the store
+	/*Client id
 	  Required: true
 	  In: path
 	*/

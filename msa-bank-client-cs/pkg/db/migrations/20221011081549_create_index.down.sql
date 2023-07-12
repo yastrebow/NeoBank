@@ -1,1 +1,1 @@
-DROP INDEX table_name_id_idx;
+DROP INDEX msa_bank_client_cs_schema.table_name_id_idx;
