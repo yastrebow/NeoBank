@@ -19,7 +19,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:generate swagger generate server --target ../../src --name MsaBankClientCs --spec ../swagger-api/msa-bank-client-cs.yml --principal interface{}
+//go:generate swagger generate server --target ..\..\msa-bank-client-cs --name MsaBankClientCs --spec ..\api\msa-bank-client-cs.yml --principal interface{}
 
 func configureFlags(api *operations.MsaBankClientCsAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -33,7 +33,11 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	// Expected interface func(string, ...interface{})
 	//
 	// Example:
-	// api.Logger = log.Printf
+	//api.Logger = log.Printf
+
+	DB := db.Init()
+	h := handlers.New(DB)
+	db.Migration()
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
@@ -42,10 +46,6 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
-
-	DB := db.Init()
-	h := handlers.New(DB)
-	db.Migration()
 
 	// Create client ...
 	api.ClientAPIAddClientHandler = client_api.AddClientHandlerFunc(func(params client_api.AddClientParams) middleware.Responder {
@@ -117,6 +117,19 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 		client.BirthDate = updatedClient.BirthDate
 		h.DB.Save(&client)
 		return client_api.NewUpdateClientOK().WithPayload(&client)
+	})
+
+	// Get client by passport ...
+	api.ClientAPIGetClientByPassportHandler = client_api.GetClientByPassportHandlerFunc(func(params client_api.GetClientByPassportParams) middleware.Responder {
+		var passportNumber = params.PassportNumber
+		var clients []*models.Client
+		if result := h.DB.Find(&clients, "passport_number = ?", passportNumber); result.Error != nil {
+			log.Error(result.Error)
+			var addError models.Error
+			addError.ErrorMessage = result.Error.Error()
+			return client_api.NewGetClientInternalServerError().WithPayload(&addError)
+		}
+		return client_api.NewGetClientsOK().WithPayload(clients)
 	})
 
 	api.PreServerShutdown = func() {}

@@ -32,7 +32,7 @@ func NewDeleteClient(ctx *middleware.Context, handler DeleteClientHandler) *Dele
 /*
 	DeleteClient swagger:route DELETE /client/{id} client-api deleteClient
 
-# Delete client from the store
+# Delete client from the store by id
 
 Delete client
 */

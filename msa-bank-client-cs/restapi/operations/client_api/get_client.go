@@ -32,7 +32,9 @@ func NewGetClient(ctx *middleware.Context, handler GetClientHandler) *GetClient 
 /*
 	GetClient swagger:route GET /client/{id} client-api getClient
 
-Delete client from the store
+# Get client from the store by id
+
+Get client
 */
 type GetClient struct {
 	Context *middleware.Context

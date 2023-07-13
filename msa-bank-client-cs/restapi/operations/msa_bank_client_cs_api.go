@@ -53,6 +53,9 @@ func NewMsaBankClientCsAPI(spec *loads.Document) *MsaBankClientCsAPI {
 		ClientAPIGetClientHandler: client_api.GetClientHandlerFunc(func(params client_api.GetClientParams) middleware.Responder {
 			return middleware.NotImplemented("operation client_api.GetClient has not yet been implemented")
 		}),
+		ClientAPIGetClientByPassportHandler: client_api.GetClientByPassportHandlerFunc(func(params client_api.GetClientByPassportParams) middleware.Responder {
+			return middleware.NotImplemented("operation client_api.GetClientByPassport has not yet been implemented")
+		}),
 		ClientAPIGetClientsHandler: client_api.GetClientsHandlerFunc(func(params client_api.GetClientsParams) middleware.Responder {
 			return middleware.NotImplemented("operation client_api.GetClients has not yet been implemented")
 		}),
@@ -101,6 +104,8 @@ type MsaBankClientCsAPI struct {
 	ClientAPIDeleteClientHandler client_api.DeleteClientHandler
 	// ClientAPIGetClientHandler sets the operation handler for the get client operation
 	ClientAPIGetClientHandler client_api.GetClientHandler
+	// ClientAPIGetClientByPassportHandler sets the operation handler for the get client by passport operation
+	ClientAPIGetClientByPassportHandler client_api.GetClientByPassportHandler
 	// ClientAPIGetClientsHandler sets the operation handler for the get clients operation
 	ClientAPIGetClientsHandler client_api.GetClientsHandler
 	// ClientAPIUpdateClientHandler sets the operation handler for the update client operation
@@ -190,6 +195,9 @@ func (o *MsaBankClientCsAPI) Validate() error {
 	}
 	if o.ClientAPIGetClientHandler == nil {
 		unregistered = append(unregistered, "client_api.GetClientHandler")
+	}
+	if o.ClientAPIGetClientByPassportHandler == nil {
+		unregistered = append(unregistered, "client_api.GetClientByPassportHandler")
 	}
 	if o.ClientAPIGetClientsHandler == nil {
 		unregistered = append(unregistered, "client_api.GetClientsHandler")
@@ -300,6 +308,10 @@ func (o *MsaBankClientCsAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/client/find-by-passport/{passportNumber}"] = client_api.NewGetClientByPassport(o.context, o.ClientAPIGetClientByPassportHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/client"] = client_api.NewGetClients(o.context, o.ClientAPIGetClientsHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
@@ -346,6 +358,6 @@ func (o *MsaBankClientCsAPI) AddMiddlewareFor(method, path string, builder middl
 	}
 	o.Init()
 	if h, ok := o.handlers[um][path]; ok {
-		o.handlers[method][path] = builder(h)
+		o.handlers[um][path] = builder(h)
 	}
 }

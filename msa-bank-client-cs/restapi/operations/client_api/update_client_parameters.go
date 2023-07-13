@@ -34,7 +34,7 @@ type UpdateClientParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*Client object that needs to be added to the store
+	/*Client object that needs to be update
 	  Required: true
 	  In: body
 	*/

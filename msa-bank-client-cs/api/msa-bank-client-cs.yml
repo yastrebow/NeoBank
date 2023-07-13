@@ -59,7 +59,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "Client object that needs to be added to the store"
+        description: "Client object that needs to be update"
         required: true
         schema:
           $ref: "#/definitions/Client"
@@ -105,8 +105,8 @@ paths:
     get:
       tags:
       - "client-api"
-      summary: "Delete client from the store"
-      description: ""
+      summary: "Get client from the store by id"
+      description: "Get client"
       operationId: "getClient"
       consumes:
       - "application/json"
@@ -115,7 +115,7 @@ paths:
       parameters:
       - in: "path"
         name: "id"
-        description: "Client object that needs to be added to the store"
+        description: "Client id"
         required: true
         type: "string"
       responses:
@@ -132,7 +132,7 @@ paths:
     delete:
       tags:
       - "client-api"
-      summary: "Delete client from the store"
+      summary: "Delete client from the store by id"
       description: "Delete client"
       operationId: "deleteClient"
       consumes:
@@ -142,7 +142,7 @@ paths:
       parameters:
       - in: "path"
         name: "id"
-        description: "Client object that needs to be added to the store"
+        description: "Client id"
         required: true
         type: "string"
       responses:
@@ -153,7 +153,37 @@ paths:
         "500":
           description: "Internal server error"
           schema:
-            $ref: '#/definitions/Error'          
+            $ref: '#/definitions/Error'
+  /client/find-by-passport/{passportNumber}:
+    get:
+      tags:
+        - "client-api"
+      summary: "Get client from the store by passport number"
+      description: "Get client by passport"
+      operationId: "getClientByPassport"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "passportNumber"
+          description: "Client passport number"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Client"
+        "405":
+          description: "Invalid input"
+        "500":
+          description: "Internal server error"
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Client:
     type: "object"
@@ -161,6 +191,8 @@ definitions:
       - firstName
       - lastName
       - birthDate
+      - passportNumber
+      - passportIssueDate
     properties:
       id:
         type: "string"
@@ -170,6 +202,11 @@ definitions:
       lastName:
         type: "string"
       birthDate:
+        type: "string"
+        format: "date"
+      passportNumber:
+        type: "string"
+      passportIssueDate:
         type: "string"
         format: "date"
   Error:
