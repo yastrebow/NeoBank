@@ -1,41 +1,61 @@
 package db
 
 import (
-    "log"
+	"github.com/ilyakaznacheev/cleanenv"
+	"log"
 
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	
+
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+type ConfigDatabase struct {
+	Port     string `yaml:"port" env:"PORT-DB" env-default:"5432"`
+	Host     string `yaml:"host" env:"HOST-DB" env-default:"localhost"`
+	User     string `yaml:"user" env:"USER-DB" env-default:"user"`
+	Password string `yaml:"password" env:"PASSWORD-DB"`
+}
+
 func Init() *gorm.DB {
-    dbURL := "postgres://postgres:postgres@localhost:5432/restapi_dev?sslmode=disable"
+	var cfg ConfigDatabase
 
-    db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
-        NamingStrategy: schema.NamingStrategy{
-          TablePrefix: "msa_bank_credit_cs_schema.",   // table name prefix, table for `User` would be `t_users`
-          SingularTable: true, // use singular table name, table for `User` would be `user` with this option enabled
-        },})
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
+	dbURL := "postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + ":" + cfg.Port + "/restapi_dev?sslmode=disable"
 
-    if err != nil {
-        log.Fatalln(err)
-    }
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "msa_bank_credit_cs_schema.", // table name prefix, table for `User` would be `t_users`
+			SingularTable: true,                         // use singular table name, table for `User` would be `user` with this option enabled
+		}})
 
-    return db
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return db
 }
 
 func Migration() {
+	var cfg ConfigDatabase
+
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
 	m, err := migrate.New(
 		"file://pkg/db/migrations",
-		"postgres://postgres:postgres@localhost:5432/restapi_dev?sslmode=disable&x-migrations-table=msa-bank-credit-cs")
+		"postgres://"+cfg.User+":"+cfg.Password+"@"+cfg.Host+":"+cfg.Port+"/restapi_dev?sslmode=disable&x-migrations-table=msa-bank-credit-cs")
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal(err)
 	}
