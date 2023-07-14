@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 
+	"github.com/ilyakaznacheev/cleanenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -12,8 +13,23 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+type ConfigDatabase struct {
+	Port     string `yaml:"port" env:"PORT-DB" env-default:"5432"`
+	Host     string `yaml:"host" env:"HOST-DB" env-default:"localhost"`
+	User     string `yaml:"user" env:"USER-DB" env-default:"user"`
+	Password string `yaml:"password" env:"PASSWORD-DB"`
+}
+
 func Init() *gorm.DB {
-	dbURL := "postgres://postgres:postgres@192.168.99.101:5438/url_db?sslmode=disable"
+
+	var cfg ConfigDatabase
+
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
+
+	dbURL := "postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + ":" + cfg.Port + "/restapi_dev?sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
@@ -30,9 +46,15 @@ func Init() *gorm.DB {
 }
 
 func Migration() {
+	var cfg ConfigDatabase
+
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
 	m, err := migrate.New(
 		"file://pkg/db/migrations",
-		"postgres://postgres:postgres@192.168.99.101:5438/url_db?sslmode=disable&x-migrations-table=msa_bank_client_cs")
+		"postgres://"+cfg.User+":"+cfg.Password+"@"+cfg.Host+":"+cfg.Port+"/restapi_dev?sslmode=disable&x-migrations-table=msa_bank_client_cs")
 	if err != nil {
 		log.Fatal(err)
 	}

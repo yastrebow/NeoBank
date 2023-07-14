@@ -5,13 +5,16 @@ go 1.18
 require (
 	github.com/deepmap/oapi-codegen v1.12.2
 	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/labstack/echo/v4 v4.9.1
 	gorm.io/driver/postgres v1.4.5
 	gorm.io/gorm v1.24.2
 )
 
 require (
+	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -20,6 +23,8 @@ require (
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
 
 require (
