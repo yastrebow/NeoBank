@@ -5,14 +5,14 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"os"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
+	"msa-bank-client/internal/repository"
 	"msa-bank-client/models"
-	"msa-bank-client/pkg/db"
-	"msa-bank-client/pkg/handlers"
 	"msa-bank-client/restapi/operations"
 	"msa-bank-client/restapi/operations/client_api"
 
@@ -34,10 +34,14 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	//
 	// Example:
 	//api.Logger = log.Printf
+	dbAddress := os.Getenv("DATABASE_URI")
+	schemaName := os.Getenv("DATABASE_SCHEMA")
+	migrationSource := os.Getenv("MIGRATION_SOURCE")
+	migrationTableName := os.Getenv("MIGRATION_TABLE_NAME")
 
-	DB := db.Init()
-	h := handlers.New(DB)
-	db.Migration()
+	DB := repository.Init(dbAddress, schemaName)
+	clientRepository := repository.New(DB)
+	repository.Migration(dbAddress, migrationSource, migrationTableName)
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
@@ -50,11 +54,12 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	// Create client ...
 	api.ClientAPIAddClientHandler = client_api.AddClientHandlerFunc(func(params client_api.AddClientParams) middleware.Responder {
 		// Append to the Client table
-		var client models.Client = *params.Body
-		if result := h.DB.Create(&client); result.Error != nil {
-			log.Error(result.Error)
+		var client = *params.Body
+		err := clientRepository.Save(client)
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
+			addError.ErrorMessage = err.Error()
 			return client_api.NewAddClientInternalServerError().WithPayload(&addError)
 		}
 		return client_api.NewAddClientCreated().WithPayload(&client)
@@ -63,26 +68,25 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	// Delete client ...
 	api.ClientAPIDeleteClientHandler = client_api.DeleteClientHandlerFunc(func(params client_api.DeleteClientParams) middleware.Responder {
 		var id = params.ID
-		var client models.Client
-		if result := h.DB.First(&client, "id = ?", id); result.Error != nil {
-			log.Error(result.Error)
+
+		err := clientRepository.Delete(id)
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
+			addError.ErrorMessage = err.Error()
 			return client_api.NewDeleteClientInternalServerError().WithPayload(&addError)
 		}
-		// Delete that client
-		h.DB.Delete(&client)
 		return client_api.NewDeleteClientOK()
 	})
 
 	// Get client ...
 	api.ClientAPIGetClientHandler = client_api.GetClientHandlerFunc(func(params client_api.GetClientParams) middleware.Responder {
 		var id = params.ID
-		var client models.Client
-		if result := h.DB.First(&client, "id = ?", id); result.Error != nil {
-			log.Error(result.Error)
+		client, err := clientRepository.Get(id)
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
+			addError.ErrorMessage = err.Error()
 			return client_api.NewGetClientInternalServerError().WithPayload(&addError)
 		}
 		return client_api.NewGetClientOK().WithPayload(&client)
@@ -90,12 +94,12 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 
 	// Get all clients ...
 	api.ClientAPIGetClientsHandler = client_api.GetClientsHandlerFunc(func(params client_api.GetClientsParams) middleware.Responder {
-		var clients []*models.Client
-		if result := h.DB.Find(&clients); result.Error != nil {
-			log.Error(result.Error)
+		clients, err := clientRepository.GetAll()
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
-			return client_api.NewGetClientInternalServerError().WithPayload(&addError)
+			addError.ErrorMessage = err.Error()
+			return client_api.NewGetClientsInternalServerError().WithPayload(&addError)
 		}
 		return client_api.NewGetClientsOK().WithPayload(clients)
 	})
@@ -103,33 +107,28 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	// Update client ...
 	api.ClientAPIUpdateClientHandler = client_api.UpdateClientHandlerFunc(func(params client_api.UpdateClientParams) middleware.Responder {
 		var id = params.Body.ID
-		var updatedClient models.Client = *params.Body
-		var client models.Client
-		if result := h.DB.First(&client, "id = ?", id); result.Error != nil {
-			log.Error(result.Error)
+		var updatedClient = *params.Body
+		err := clientRepository.Update(id.String(), updatedClient)
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
-			return client_api.NewUpdateClientInternalServerError().WithPayload(&addError)
+			addError.ErrorMessage = err.Error()
+			return client_api.NewGetClientsInternalServerError().WithPayload(&addError)
 		}
-		client.ID = updatedClient.ID
-		client.FirstName = updatedClient.FirstName
-		client.LastName = updatedClient.LastName
-		client.BirthDate = updatedClient.BirthDate
-		h.DB.Save(&client)
-		return client_api.NewUpdateClientOK().WithPayload(&client)
+		return client_api.NewUpdateClientOK().WithPayload(&updatedClient)
 	})
 
 	// Get client by passport ...
 	api.ClientAPIGetClientByPassportHandler = client_api.GetClientByPassportHandlerFunc(func(params client_api.GetClientByPassportParams) middleware.Responder {
 		var passportNumber = params.PassportNumber
-		var clients []*models.Client
-		if result := h.DB.Find(&clients, "passport_number = ?", passportNumber); result.Error != nil {
-			log.Error(result.Error)
+		clients, err := clientRepository.GetByPassport(passportNumber)
+		if err != nil {
+			log.Error(err)
 			var addError models.Error
-			addError.ErrorMessage = result.Error.Error()
-			return client_api.NewGetClientInternalServerError().WithPayload(&addError)
+			addError.ErrorMessage = err.Error()
+			return client_api.NewGetClientByPassportInternalServerError().WithPayload(&addError)
 		}
-		return client_api.NewGetClientsOK().WithPayload(clients)
+		return client_api.NewGetClientByPassportOK().WithPayload(clients)
 	})
 
 	api.PreServerShutdown = func() {}

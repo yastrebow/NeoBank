@@ -24,7 +24,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "description": "This is a sample server for Clients.",
-    "title": "Swagger msa-bank-client-cs",
+    "title": "msa-bank-client-cs",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
       "email": "apiteam@swagger.io"
@@ -348,7 +348,7 @@ func init() {
   "swagger": "2.0",
   "info": {
     "description": "This is a sample server for Clients.",
-    "title": "Swagger msa-bank-client-cs",
+    "title": "msa-bank-client-cs",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
       "email": "apiteam@swagger.io"
