@@ -51,14 +51,14 @@ func NewServer(api *operations.MsaBankClientCsAPI) *Server {
 	return s
 }
 
-// ConfigureAPI configures the API and repository.
+// ConfigureAPI configures the API and handlers.
 func (s *Server) ConfigureAPI() {
 	if s.api != nil {
 		s.handler = configureAPI(s.api)
 	}
 }
 
-// ConfigureFlags configures the additional flags defined by the repository. Needs to be called before the parser.Parse
+// ConfigureFlags configures the additional flags defined by the handlers. Needs to be called before the parser.Parse
 func (s *Server) ConfigureFlags() {
 	if s.api != nil {
 		configureFlags(s.api)

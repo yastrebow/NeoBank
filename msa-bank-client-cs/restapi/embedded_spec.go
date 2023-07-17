@@ -147,6 +147,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/Client"
+            },
+            "headers": {
+              "Authorization": {
+                "type": "string",
+                "description": "Authorization header"
+              }
             }
           },
           "405": {
@@ -471,6 +477,12 @@ func init() {
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/Client"
+            },
+            "headers": {
+              "Authorization": {
+                "type": "string",
+                "description": "Authorization header"
+              }
             }
           },
           "405": {

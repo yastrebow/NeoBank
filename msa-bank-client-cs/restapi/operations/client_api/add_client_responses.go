@@ -22,6 +22,10 @@ AddClientCreated successful operation
 swagger:response addClientCreated
 */
 type AddClientCreated struct {
+	/*Authorization header
+
+	 */
+	Authorization string `json:"Authorization"`
 
 	/*
 	  In: Body
@@ -33,6 +37,17 @@ type AddClientCreated struct {
 func NewAddClientCreated() *AddClientCreated {
 
 	return &AddClientCreated{}
+}
+
+// WithAuthorization adds the authorization to the add client created response
+func (o *AddClientCreated) WithAuthorization(authorization string) *AddClientCreated {
+	o.Authorization = authorization
+	return o
+}
+
+// SetAuthorization sets the authorization to the add client created response
+func (o *AddClientCreated) SetAuthorization(authorization string) {
+	o.Authorization = authorization
 }
 
 // WithPayload adds the payload to the add client created response
@@ -48,6 +63,13 @@ func (o *AddClientCreated) SetPayload(payload *models.Client) {
 
 // WriteResponse to the client
 func (o *AddClientCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	// response header Authorization
+
+	authorization := o.Authorization
+	if authorization != "" {
+		rw.Header().Set("Authorization", authorization)
+	}
 
 	rw.WriteHeader(201)
 	if o.Payload != nil {
