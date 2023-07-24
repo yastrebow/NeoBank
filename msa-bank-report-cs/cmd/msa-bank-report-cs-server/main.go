@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/ilyakaznacheev/cleanenv"
 	"msa-bank-report-cs/models"
 
 	"encoding/json"
@@ -20,10 +21,22 @@ var ctx = context.Background()
 
 const portNumber = 8084
 
+type ConfigDatabase struct {
+	Port string `yaml:"port" env:"REDIS-PORT" env-default:"6379"`
+	Host string `yaml:"host" env:"REDIS-HOST" env-default:"localhost"`
+}
+
 func main() {
 
+	var cfg ConfigDatabase
+
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
+
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     cfg.Host + ":" + cfg.Port,
 		Password: "",
 		DB:       0,
 	})
@@ -147,20 +160,20 @@ func PrepareAndReturnExcel(userInputData *models.Report) *excelize.File {
 		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", i), userInputData.Accounts[i-startRow].Amount)
 	}
 
-	startRow+=len(userInputData.Accounts)
+	startRow += len(userInputData.Accounts)
 	f.SetCellValue("Sheet1", fmt.Sprintf("C%d", startRow), "Кредиты клиента:")
 	startRow++
 	for i := startRow; i < (len(userInputData.Credits) + startRow); i++ {
-			f.SetCellValue("Sheet1", fmt.Sprintf("C%d", i), "ИД кредита: ")
-			f.SetCellValue("Sheet1", fmt.Sprintf("D%d", i), userInputData.Credits[i-startRow].Id)
-			f.SetCellValue("Sheet1", fmt.Sprintf("E%d", i), "Количество месяцев: ")
-			f.SetCellValue("Sheet1", fmt.Sprintf("F%d", i), userInputData.Credits[i-startRow].Months)
-			f.SetCellValue("Sheet1", fmt.Sprintf("G%d", i), "Ставка: ")
-			f.SetCellValue("Sheet1", fmt.Sprintf("H%d", i), userInputData.Credits[i-startRow].Rate)
-			f.SetCellValue("Sheet1", fmt.Sprintf("I%d", i), "Задолженность по кредиту: ")
-			f.SetCellValue("Sheet1", fmt.Sprintf("J%d", i), userInputData.Credits[i-startRow].Amount)
-			f.SetCellValue("Sheet1", fmt.Sprintf("K%d", i), "Сумма кредита: ")
-			f.SetCellValue("Sheet1", fmt.Sprintf("L%d", i), userInputData.Credits[i-startRow].TotalAmount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("C%d", i), "ИД кредита: ")
+		f.SetCellValue("Sheet1", fmt.Sprintf("D%d", i), userInputData.Credits[i-startRow].Id)
+		f.SetCellValue("Sheet1", fmt.Sprintf("E%d", i), "Количество месяцев: ")
+		f.SetCellValue("Sheet1", fmt.Sprintf("F%d", i), userInputData.Credits[i-startRow].Months)
+		f.SetCellValue("Sheet1", fmt.Sprintf("G%d", i), "Ставка: ")
+		f.SetCellValue("Sheet1", fmt.Sprintf("H%d", i), userInputData.Credits[i-startRow].Rate)
+		f.SetCellValue("Sheet1", fmt.Sprintf("I%d", i), "Задолженность по кредиту: ")
+		f.SetCellValue("Sheet1", fmt.Sprintf("J%d", i), userInputData.Credits[i-startRow].Amount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("K%d", i), "Сумма кредита: ")
+		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", i), userInputData.Credits[i-startRow].TotalAmount)
 	}
 
 	return f

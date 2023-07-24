@@ -1,11 +1,12 @@
 package db
 
 import (
+	"log"
+
 	"github.com/ilyakaznacheev/cleanenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -20,19 +21,22 @@ type ConfigDatabase struct {
 }
 
 func Init() *gorm.DB {
+
 	var cfg ConfigDatabase
 
 	err := cleanenv.ReadConfig("config.yml", &cfg)
 	if err != nil {
 		log.Fatalln("Cannot read config", err)
 	}
+
 	dbURL := "postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + ":" + cfg.Port + "/restapi_dev?sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "msa_bank_account_cs_schema.",
-			SingularTable: true, // use singular table name, table for `User` would be `user` with this option enabled
-		}})
+			TablePrefix:   "msa_bank_client_cs_schema.", // table name prefix, table for `User` would be `t_users`
+			SingularTable: true,                         // use singular table name, table for `User` would be `user` with this option enabled
+		},
+	})
 
 	if err != nil {
 		log.Fatalln(err)
@@ -50,12 +54,12 @@ func Migration() {
 	}
 	m, err := migrate.New(
 		"file://pkg/db/migrations",
-		"postgres://"+cfg.User+":"+cfg.Password+"@"+cfg.Host+":"+cfg.Port+"/restapi_dev?sslmode=disable&x-migrations-table=msa-bank-account-cs")
+		"postgres://"+cfg.User+":"+cfg.Password+"@"+cfg.Host+":"+cfg.Port+"/restapi_dev?sslmode=disable&x-migrations-table=msa_bank_client_cs")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal(err)
 	}
+
 }

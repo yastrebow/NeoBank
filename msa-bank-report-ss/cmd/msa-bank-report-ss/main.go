@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ilyakaznacheev/cleanenv"
 	"msa-bank-report-ss/models"
 
 	"github.com/redis/go-redis/v9"
@@ -14,16 +15,32 @@ import (
 
 var ctx = context.Background()
 
+type ConfigDatabase struct {
+	RedisPort string `yaml:"redis-port" env:"REDIS-PORT" env-default:"6379"`
+	RedisHost string `yaml:"redis-host" env:"REDIS-HOST" env-default:"localhost"`
+	KafkaPort string `yaml:"kafka-port" env:"KAFKA-PORT" env-default:"9092"`
+	KafkaHost string `yaml:"kafka-host" env:"KAFKA-HOST" env-default:"localhost"`
+}
+
 func main() {
+	var cfg ConfigDatabase
+
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
+
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     cfg.RedisHost + ":" + cfg.RedisPort,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 	defer rdb.Close()
 
+	kafkaaddr := cfg.KafkaHost + ":" + cfg.KafkaPort
+
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:     []string{"localhost:29092"},
+		Brokers:     []string{kafkaaddr},
 		GroupID:     "consumer-group-id",
 		GroupTopics: []string{"dev.msa_bank_account_cs_schema.account", "dev.msa_bank_credit_cs_schema.credit", "dev.msa_bank_client_cs_schema.client"},
 		MinBytes:    10e2, // 1KB
