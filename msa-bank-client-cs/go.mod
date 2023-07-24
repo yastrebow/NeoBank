@@ -3,6 +3,7 @@ module msa-bank-client
 go 1.18
 
 require (
+	github.com/go-kit/log v0.1.0
 	github.com/go-openapi/errors v0.20.4
 	github.com/go-openapi/loads v0.21.2
 	github.com/go-openapi/runtime v0.26.0
@@ -13,6 +14,8 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/jessevdk/go-flags v1.5.0
+	github.com/joho/godotenv v1.3.0
+	github.com/sirupsen/logrus v1.9.0
 	github.com/sirupsen/logrus v1.9.0
 	golang.org/x/net v0.12.0
 	gorm.io/driver/postgres v1.4.5
@@ -38,6 +41,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
+	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect

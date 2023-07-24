@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   description: "This is a sample server for Clients."
   version: "1.0.0"
-  title: "Swagger msa-bank-client-cs"
+  title: "msa-bank-client-cs"
   termsOfService: "http://swagger.io/terms/"
   contact:
     email: "apiteam@swagger.io"
@@ -38,6 +38,10 @@ paths:
       responses:
         "201":
           description: "successful operation"
+          headers:
+            Authorization:
+              type: string
+              description: "Authorization header"
           schema:
             $ref: "#/definitions/Client"
         "405":
