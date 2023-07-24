@@ -14,8 +14,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/joho/godotenv v1.3.0
-	github.com/sirupsen/logrus v1.9.0
+	github.com/joho/godotenv v1.4.0
 	github.com/sirupsen/logrus v1.9.0
 	golang.org/x/net v0.12.0
 	gorm.io/driver/postgres v1.4.5
@@ -49,7 +48,6 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

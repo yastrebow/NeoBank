@@ -1,4 +1,9 @@
-host: localhost
-port: 5432
+server_port: 8080
+db_host: localhost
+db_port: 5438
+db_name: restapi_dev
 user: postgres
 password: postgres
+migration_source: file://pkg/db/migrations
+migration_schema: msa_bank_client_cs_schema.
+migration_table_name: msa_bank_client_cs
