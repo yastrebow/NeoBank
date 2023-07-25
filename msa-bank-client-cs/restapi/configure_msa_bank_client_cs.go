@@ -5,12 +5,13 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
-	"os"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/ilyakaznacheev/cleanenv"
 
+	"msa-bank-client/internal/config"
 	customMiddleware "msa-bank-client/internal/middleware"
 	"msa-bank-client/internal/repository"
 	"msa-bank-client/models"
@@ -35,14 +36,16 @@ func configureAPI(api *operations.MsaBankClientCsAPI) http.Handler {
 	//
 	// Example:
 	//api.Logger = log.Printf
-	dbAddress := os.Getenv("DATABASE_URI")
-	schemaName := os.Getenv("DATABASE_SCHEMA")
-	migrationSource := os.Getenv("MIGRATION_SOURCE")
-	migrationTableName := os.Getenv("MIGRATION_TABLE_NAME")
 
-	DB := repository.Init(dbAddress, schemaName)
+	var cfg config.Config
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		log.Fatalln("Cannot read config", err)
+	}
+
+	DB := repository.Init(cfg)
 	clientRepository := repository.New(DB)
-	repository.Migration(dbAddress, migrationSource, migrationTableName)
+	repository.Migration(cfg)
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line

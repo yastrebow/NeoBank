@@ -11,13 +11,22 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	"msa-bank-client/internal/config"
 )
 
-func Init(dbAddress, schemaName string) *gorm.DB {
-
+func Init(cfg config.Config) *gorm.DB {
+	dbAddress := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.User,
+		cfg.Password,
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBName,
+	)
 	db, err := gorm.Open(postgres.Open(dbAddress), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   schemaName,
+			TablePrefix:   cfg.MigrationSchema,
 			SingularTable: true, // use singular table name, table for `User` would be `user` with this option enabled
 		},
 	})
@@ -29,15 +38,18 @@ func Init(dbAddress, schemaName string) *gorm.DB {
 	return db
 }
 
-func Migration(
-	dbAddress,
-	migrationSource,
-	migrationTableName string) {
+func Migration(cfg config.Config) {
 
-	fullDBUrl := fmt.Sprintf("%s&x-migrations-table=%s",
-		dbAddress, migrationTableName)
+	dbAddress := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.User,
+		cfg.Password,
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBName,
+	)
 
-	m, err := migrate.New(migrationSource, fullDBUrl)
+	m, err := migrate.New(cfg.MigrationSource, dbAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
