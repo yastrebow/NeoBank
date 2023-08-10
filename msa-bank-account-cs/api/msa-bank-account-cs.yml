@@ -78,7 +78,10 @@ paths:
       responses:
         '200':
           description: successful operation
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
         '405':
           description: Invalid input
           content: {}
