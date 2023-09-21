@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"github.com/labstack/echo/v4"
+	log "github.com/sirupsen/logrus"
+	"math"
 	"msa-bank-credit-cs/models"
 	"msa-bank-credit-cs/pkg/services"
 	"net/http"
-	"math"
-	"github.com/labstack/echo/v4"
-	log "github.com/sirupsen/logrus"
 )
 
 type Handler struct {
@@ -35,11 +35,18 @@ func (h Handler) PostCredit(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
+	percentage := req.Rate / (float32(req.Months) * 100)
+	totalAmount := float32(math.Pow(float64(1+percentage), float64(req.Months)) / (math.Pow(float64(1+percentage), float64(req.Months)) - 1) * float64(req.Amount))
+	monthPayment := totalAmount / float32(req.Months)
+
 	reqCredit := &models.Credit{
-		Amount:   req.Amount,
-		ClientId: req.ClientId,
-		Months:   req.Months,
-		Rate:     req.Rate,
+		Amount:       req.Amount,
+		ClientId:     req.ClientId,
+		Months:       req.Months,
+		Rate:         req.Rate,
+		CreditType:   req.CreditType,
+		MonthPayment: monthPayment,
+		TotalAmount:  totalAmount,
 	}
 
 	resCredit, err := h.CreditService.PostCredit(reqCredit)
@@ -60,16 +67,16 @@ func (h Handler) PostCreditPaymentPlan(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	reqRate := &models.Rate{
-		Amount:   req.Amount,
-		Months:   req.Months,
-		Rate:     req.Rate,
+		Amount: req.Amount,
+		Months: req.Months,
+		Rate:   req.Rate,
 	}
-	
+
 	fullAmount := *reqRate.Amount
 	var totalAmount float32
 	var allpayment models.AllPayment
-	var monthlyRate = (*reqRate.Rate/12)/100
-	var annuityRatio = float32(float64(monthlyRate) * (math.Pow(float64(1+monthlyRate), float64(*reqRate.Months)))/((math.Pow(float64(1+monthlyRate), float64(*reqRate.Months)))-1))
+	var monthlyRate = (*reqRate.Rate / 12) / 100
+	var annuityRatio = float32(float64(monthlyRate) * (math.Pow(float64(1+monthlyRate), float64(*reqRate.Months))) / ((math.Pow(float64(1+monthlyRate), float64(*reqRate.Months))) - 1))
 
 	for i := 1; i < *reqRate.Months+1; i++ {
 		totalAmount += fullAmount * annuityRatio
@@ -79,10 +86,9 @@ func (h Handler) PostCreditPaymentPlan(ctx echo.Context) error {
 		var monthPayment = fullAmount * annuityRatio
 		totalAmount -= monthPayment
 		allpayment = append(allpayment, models.PaymentPlan{
-		MonthPayment: monthPayment,
-		Month : i,
-		Amount: totalAmount,
-		},)
+			MonthPayment: monthPayment,
+			TotalAmount:  totalAmount,
+		})
 	}
 
 	return ctx.JSON(http.StatusOK, allpayment)
@@ -107,7 +113,6 @@ func (h Handler) PostCreditEarlyRepayment(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, res)
 }
 
-
 // Creating a request for full repayment
 // (POST /credit/fullRepayment)
 func (h Handler) PostCreditFullRepayment(ctx echo.Context) error {
@@ -118,8 +123,8 @@ func (h Handler) PostCreditFullRepayment(ctx echo.Context) error {
 	}
 
 	reqRepayment := &models.EarlyRepayment{
-		Amount:   0.0,
-		Id: req.Id,
+		Amount: 0.0,
+		Id:     req.Id,
 	}
 
 	res, err := h.RepaymentService.PostEarlyRepayment(reqRepayment)

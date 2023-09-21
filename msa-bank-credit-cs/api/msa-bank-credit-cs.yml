@@ -90,6 +90,9 @@ components:
         - amount
         - rate
         - months
+        - creditType
+        - totalAmount
+        - monthPayment
       properties:
         clientId:
           type: "string"
@@ -103,6 +106,13 @@ components:
           type: "number"
         months:
           type: "integer"
+        creditType:
+          type: "string"
+          enum: [ 'Потребительский', 'Ипотека', 'Автокредит' ]
+        totalAmount:
+          type: "number"
+        monthPayment:
+          type: "number"
     EarlyRepayment:
       type: object
       required:
@@ -125,15 +135,12 @@ components:
     PaymentPlan:
       type: object
       required:
-        - month
         - monthPayment
-        - amount
+        - totalAmount
       properties:
-        month:
-          type: "integer"
         monthPayment:
           type: "number"
-        amount:
+        totalAmount:
           type: "number"
     AllPayment:
       type: array
