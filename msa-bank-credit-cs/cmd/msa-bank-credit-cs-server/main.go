@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"msa-bank-credit-cs/pkg/db"
+	"msa-bank-credit-cs/pkg/handlers"
 	"msa-bank-credit-cs/pkg/server"
 	"msa-bank-credit-cs/pkg/services"
-	"msa-bank-credit-cs/pkg/handlers"
 	"msa-bank-credit-cs/repository"
 	"msa-bank-credit-cs/restapi"
-	
 )
 
 func main() {
